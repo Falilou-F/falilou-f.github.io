@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stages — Portfolio Falilou Fall</title>
+
+  <style>
+    :root{
+      --primary: #0a192f;
+      --accent: #64ffda;
+      --accent2: #0d6efd;
+      --light-bg: #112240;
+      --card-bg: #172a45;
+      --text: #ccd6f6;
+      --text-muted: #8892b0;
+      --white: #e6f1ff;
+      --radius: 10px;
+      --transition: all 0.3s ease;
+    }
+
+    *, *::before, *::after{ box-sizing: border-box; margin:0; padding:0; }
+    html{ scroll-behavior: smooth; }
+    body{
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--primary);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a{ color: var(--accent); text-decoration: none; transition: var(--transition); }
+    a:hover{ color: var(--white); }
+
+    #progress-bar{
+      position: fixed; top:0; left:0;
+      height: 3px; width:0;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    nav{
+      position: fixed;
+      top: 3px; left:0; right:0;
+      background: rgba(10,25,47,0.97);
+      backdrop-filter: blur(10px);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      padding: 1rem 2.5rem;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(100,255,218,0.1);
+    }
+    .nav-logo{
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+    .nav-links{
+      display:flex;
+      gap: 1.8rem;
+      list-style:none;
+    }
+    .nav-links a{
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: relative;
+      padding-bottom: 4px;
+    }
+    .nav-links a::after{
+      content:"";
+      position:absolute;
+      bottom:0; left:0;
+      width:0; height:2px;
+      background: var(--accent);
+      transition: var(--transition);
+    }
+    .nav-links a:hover,
+    .nav-links a.active{ color: var(--accent); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after{ width:100%; }
+
+    .hamburger{
+      display:none;
+      flex-direction: column;
+      gap:5px;
+      cursor:pointer;
+    }
+    .hamburger span{
+      display:block;
+      width:25px;
+      height:2px;
+      background: var(--accent);
+      transition: var(--transition);
+    }
+
+    .page-content{
+      padding-top: 80px;
+      min-height: 100vh;
+    }
+
+    section, .main-section{ padding: 5rem 10vw; }
+
+    .section-title{
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+      display:flex;
+      align-items:center;
+      gap: 1rem;
+    }
+    .section-title::before{
+      content: attr(data-num);
+      color: var(--accent);
+      font-size: 1.1rem;
+      font-family: monospace;
+    }
+    .section-title::after{
+      content:"";
+      flex:1;
+      height:1px;
+      background: var(--light-bg);
+      max-width: 300px;
+    }
+    .section-sub{
+      color: var(--text-muted);
+      margin-bottom: 2.2rem;
+      font-size: 0.95rem;
+      max-width: 850px;
+    }
+
+    .card{
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      border: 1px solid rgba(100,255,218,0.08);
+      transition: var(--transition);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      margin-bottom: 1.4rem;
+    }
+    .card:hover{
+      transform: translateY(-5px);
+      border-color: rgba(100,255,218,0.25);
+    }
+
+    .stage-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+    .stage-title{
+      font-size: 1.15rem;
+      color: var(--white);
+      font-weight: 800;
+    }
+    .stage-meta{
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    .stage-desc{ color: var(--text-muted); margin-top: 0.4rem; }
+
+    .tag{
+      display:inline-block;
+      background: rgba(100,255,218,0.08);
+      color: var(--accent);
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-family: monospace;
+      margin-right: 0.35rem;
+      margin-top: 0.5rem;
+    }
+
+    .rapport-preview{
+      margin-top: 1rem;
+      border-radius: var(--radius);
+      overflow:hidden;
+      border: 1px solid rgba(100,255,218,0.18);
+      background: rgba(17,34,64,0.55);
+    }
+    .pdf-frame{
+      width: 100%;
+      height: min(78vh, 820px);
+      border: 0;
+      display:block;
+      background: #0b1220;
+    }
+    .pdf-fallback{
+      padding: 0.9rem 1rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .btn{
+      display:inline-block;
+      padding: 0.75rem 1.8rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor:pointer;
+      transition: var(--transition);
+      letter-spacing: 1px;
+      margin-top: 0.9rem;
+      margin-right: 0.6rem;
+    }
+    .btn-outline{
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    .btn-outline:hover{
+      background: rgba(100,255,218,0.1);
+      transform: translateY(-2px);
+      color: var(--accent);
+    }
+    .btn-solid{
+      background: var(--accent2);
+      border: 2px solid var(--accent2);
+      color: var(--white);
+    }
+    .btn-solid:hover{
+      filter: brightness(1.15);
+      transform: translateY(-2px);
+      color: var(--white);
+    }
+
+    .reveal{
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible{
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #back-to-top{
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--accent);
+      color: var(--primary);
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      z-index: 999;
+      box-shadow: 0 4px 15px rgba(100,255,218,0.3);
+    }
+    #back-to-top:hover{ transform: translateY(-3px); }
+    #back-to-top.visible{ display:flex; }
+
+    footer{
+      text-align:center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--light-bg);
+    }
+    footer span{ color: var(--accent); }
+
+    @media (max-width: 768px){
+      nav{ padding: 1rem 1.5rem; }
+      .nav-links{
+        display:none;
+        flex-direction: column;
+        position:absolute;
+        top: 100%;
+        left:0; right:0;
+        background: rgba(10,25,47,0.98);
+        padding: 1rem 2rem;
+        gap: 1.2rem;
+        border-top: 1px solid var(--light-bg);
+      }
+      .nav-links.open{ display:flex; }
+      .hamburger{ display:flex; }
+      section, .main-section{ padding: 4rem 6vw; }
+      .pdf-frame{ height: 70vh; }
+      .stage-meta{ white-space: normal; }
+    }
+
+    @media print{
+      nav, #back-to-top, #progress-bar{ display:none !important; }
+      .pdf-frame{ display:none !important; }
+      .rapport-preview{ border: none; }
+      .card{ page-break-inside: avoid; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="progress-bar"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">FF.</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="apropos.html">À propos</a></li>
+      <li><a href="projets.html">Projets</a></li>
+      <li><a href="stages.html" class="active">Stages</a></li>
+      <li><a href="veille.html">Veille</a></li>
+      <li><a href="competences.html">Compétences</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <section class="main-section">
+      <h2 class="section-title" data-num="03.">Mes stages</h2>
+      <p class="section-sub">
+        Voici mes expériences en entreprise, présentées dans l'ordre chronologique.
+        Les rapports PDF sont disponibles directement sur la page.
+      </p>
+
+      <!-- ① URSSAF — Mai-Juin 2025 -->
+      <div class="card reveal">
+        <div class="stage-head">
+          <div class="stage-title">URSSAF — Support IT</div>
+          <div class="stage-meta"><strong>Mai–Juin 2025</strong> · Montreuil</div>
+        </div>
+
+        <p class="stage-desc">
+          Support utilisateur N1/N2, traitement des tickets via GLPI, gestion des comptes
+          Active Directory, déploiement de postes et maintenance du parc informatique.
+        </p>
+
+        <div>
+          <span class="tag">GLPI</span>
+          <span class="tag">Active Directory</span>
+          <span class="tag">Windows Server</span>
+          <span class="tag">Support N1/N2</span>
+        </div>
+
+        <div class="rapport-preview">
+          <iframe
+            class="pdf-frame"
+            src="Rapport-URSSAF.pdf?v=1#view=FitH"
+            title="Rapport de stage URSSAF (PDF)">
+          </iframe>
+          <div class="pdf-fallback">
+            Si le PDF ne s'affiche pas :
+            <a href="Rapport-URSSAF.pdf?v=1" target="_blank" rel="noopener">ouvre-le ici</a>.
+          </div>
+        </div>
+
+        <a class="btn btn-solid" href="Rapport-URSSAF.pdf?v=1" download>Télécharger le rapport URSSAF</a>
+        <a class="btn btn-outline" href="Rapport-URSSAF.pdf?v=1" target="_blank" rel="noopener">Ouvrir en plein écran</a>
+      </div>
+
+      <!-- ② ALTURING — Janvier-Février 2026 -->
+      <div class="card reveal">
+        <div class="stage-head">
+          <div class="stage-title">Alturing — DevOps & Data Stack</div>
+          <div class="stage-meta"><strong>Janvier–Février 2026</strong> · Paris 14e</div>
+        </div>
+
+        <p class="stage-desc">
+          Mise en place d'une Modern Data Stack : Kestra (orchestration), PostgreSQL, Metabase.
+          Méthode Agile Scrum, gestion de tickets GitLab.
+        </p>
+
+        <div>
+          <span class="tag">Kestra</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Metabase</span>
+          <span class="tag">Agile</span>
+          <span class="tag">GitLab</span>
+        </div>
+
+        <div class="rapport-preview">
+          <iframe
+            class="pdf-frame"
+            src="Rapport-final%20v3.pdf?v=1#view=FitH"
+            title="Rapport de stage Alturing (PDF)">
+          </iframe>
+          <div class="pdf-fallback">
+            Si le PDF ne s'affiche pas :
+            <a href="Rapport-final%20v3.pdf?v=1" target="_blank" rel="noopener">ouvre-le ici</a>.
+          </div>
+        </div>
+
+        <a class="btn btn-solid" href="Rapport-final%20v3.pdf?v=1" download>Télécharger le rapport Alturing</a>
+        <a class="btn btn-outline" href="Rapport-final%20v3.pdf?v=1" target="_blank" rel="noopener">Ouvrir en plein écran</a>
+      </div>
+
+    </section>
+
+    <footer>
+      <p>Développé par <span>Falilou Fall</span> — BTS SIO Option SLAM — <span id="year"></span></p>
+    </footer>
+  </div>
+
+  <button id="back-to-top" title="Retour en haut">↑</button>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const hamburger = document.getElementById("hamburger");
+    const navLinks  = document.getElementById("navLinks");
+    hamburger.addEventListener("click", () => navLinks.classList.toggle("open"));
+
+    const progressBar = document.getElementById("progress-bar");
+    const backToTop   = document.getElementById("back-to-top");
+
+    window.addEventListener("scroll", () => {
+      const s = document.documentElement.scrollTop;
+      const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      progressBar.style.width = (h ? (s / h) * 100 : 0) + "%";
+      if (s > 400) backToTop.classList.add("visible");
+      else backToTop.classList.remove("visible");
+    });
+
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    document.querySelectorAll(".reveal").forEach(el => {
+      new IntersectionObserver((entries, obs) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add("visible");
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 }).observe(el);
+    });
+  </script>
+</body>
+</html>
