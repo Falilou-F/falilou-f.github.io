@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compétences E4 — Portfolio Falilou Fall</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0a192f;
+      --accent: #64ffda;
+      --accent2: #0d6efd;
+      --light-bg: #112240;
+      --card-bg: #172a45;
+      --text: #ccd6f6;
+      --text-muted: #8892b0;
+      --white: #e6f1ff;
+      --radius: 10px;
+      --transition: all 0.3s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--primary); color: var(--text); line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; transition: var(--transition); }
+    a:hover { color: var(--white); }
+
+    /* PROGRESS BAR */
+    #progress-bar { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent2)); z-index: 9999; transition: width 0.1s linear; }
+
+    /* NAVBAR */
+    nav { position: fixed; top: 3px; left: 0; right: 0; background: rgba(10,25,47,0.97); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 1rem 2.5rem; z-index: 1000; border-bottom: 1px solid rgba(100,255,218,0.1); }
+    .nav-logo { font-size: 1.4rem; font-weight: 700; color: var(--accent); letter-spacing: 2px; }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a { color: var(--text-muted); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; position: relative; padding-bottom: 4px; }
+    .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--accent); transition: var(--transition); }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { display: block; width: 25px; height: 2px; background: var(--accent); transition: var(--transition); }
+
+    /* PAGE WRAPPER */
+    .page-content { padding-top: 80px; min-height: 100vh; }
+
+    /* SECTION */
+    section, .main-section { padding: 5rem 10vw; }
+    .section-title { font-size: 1.8rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem; }
+    .section-title::before { content: attr(data-num); color: var(--accent); font-size: 1.1rem; font-family: monospace; }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--light-bg); max-width: 300px; }
+    .section-sub { color: var(--text-muted); margin-bottom: 3rem; font-size: 0.95rem; }
+
+    /* CARDS */
+    .card { background: var(--card-bg); border-radius: var(--radius); padding: 1.5rem; border: 1px solid rgba(100,255,218,0.08); transition: var(--transition); }
+    .card:hover { transform: translateY(-5px); border-color: rgba(100,255,218,0.25); }
+
+    /* BADGE */
+    .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.75rem; }
+    .badge-ok { background: rgba(100,255,218,0.15); color: var(--accent); }
+    .badge-partial { background: rgba(255,193,7,0.15); color: #ffc107; }
+
+    /* TAG */
+    .tag { display: inline-block; background: rgba(100,255,218,0.08); color: var(--accent); padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.78rem; font-family: monospace; }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* BACK TO TOP */
+    #back-to-top { position: fixed; bottom: 2rem; right: 2rem; background: var(--accent); color: var(--primary); border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; transition: var(--transition); z-index: 999; box-shadow: 0 4px 15px rgba(100,255,218,0.3); }
+    #back-to-top:hover { transform: translateY(-3px); }
+    #back-to-top.visible { display: flex; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.82rem; border-top: 1px solid var(--light-bg); }
+    footer span { color: var(--accent); }
+
+    /* TABLE BLOC 1 */
+    .table-wrap { overflow-x: auto; }
+    .table-wrap table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 580px; }
+    .table-wrap thead tr { background: var(--light-bg); }
+    .table-wrap th { padding: 0.85rem 1rem; text-align: left; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; font-size: 0.78rem; border-bottom: 2px solid var(--accent); }
+    .table-wrap tbody tr { transition: var(--transition); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .table-wrap tbody tr:hover { background: var(--light-bg); }
+    .table-wrap td { padding: 0.75rem 1rem; color: var(--text-muted); }
+    .table-wrap td:first-child { color: var(--white); font-weight: 600; }
+
+    /* ===== TABLEAU SYNTHESE E5 ===== */
+    .synthese-section { padding: 5rem 10vw; }
+    .synthese-section .section-title { font-size: 1.8rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem; }
+    .synthese-section .section-title::before { content: attr(data-num); color: var(--accent); font-size: 1.1rem; font-family: monospace; }
+    .synthese-section .section-title::after { content: ''; flex: 1; height: 1px; background: var(--light-bg); max-width: 300px; }
+    .synthese-section .section-sub { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+
+    .synthese-wrap { overflow-x: auto; margin-top: 1rem; }
+    .synthese-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; min-width: 1000px; }
+    .synthese-table th, .synthese-table td { border: 1px solid rgba(100,255,218,0.15); padding: 0.6rem 0.75rem; vertical-align: middle; }
+    .synthese-table thead tr:first-child th { background: var(--accent); color: var(--primary); font-weight: 700; font-size: 0.85rem; text-align: center; letter-spacing: 1px; }
+    .synthese-table thead tr:nth-child(2) th { background: var(--light-bg); color: var(--accent); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+    .synthese-table thead tr:nth-child(3) th { background: rgba(100,255,218,0.05); color: var(--text-muted); font-size: 0.7rem; font-weight: 400; }
+    .synthese-table tbody tr { transition: var(--transition); }
+    .synthese-table tbody tr:hover { background: var(--light-bg); }
+    .synthese-table tbody td { color: var(--text-muted); }
+    .synthese-table tbody td:first-child { color: var(--white); font-weight: 500; }
+    .synthese-table .check-cell { text-align: center; color: var(--accent); font-size: 1rem; }
+    .synthese-table .section-row td { background: rgba(13,110,253,0.12); color: var(--accent2); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; text-align: center; border-top: 2px solid var(--accent2); }
+    .synthese-table .period-cell { color: var(--text-muted); font-size: 0.72rem; white-space: nowrap; }
+    .check-icon { color: var(--accent); font-size: 1.1rem; }
+
+    /* ACCORDION */
+    .accordion { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+    .accordion-item { background: var(--card-bg); border: 1px solid rgba(100,255,218,0.08); border-radius: var(--radius); overflow: hidden; transition: var(--transition); }
+    .accordion-item:hover { border-color: rgba(100,255,218,0.2); }
+    .accordion-header { padding: 1.2rem 1.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .accordion-title { font-size: 1rem; font-weight: 600; color: var(--white); }
+    .accordion-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .accordion-icon { color: var(--accent); font-size: 1.2rem; transition: var(--transition); }
+    .accordion-item.open .accordion-icon { transform: rotate(45deg); }
+    .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; padding: 0 1.5rem; }
+    .accordion-item.open .accordion-body { max-height: 1000px; padding: 0 1.5rem 1.5rem; }
+    .accordion-body p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; margin-top: 0.5rem; }
+    .accordion-body strong { color: var(--white); }
+    .accordion-body em { color: var(--accent); font-style: normal; }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(10,25,47,0.98); padding: 1rem 2rem; gap: 1.2rem; border-top: 1px solid var(--light-bg); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      section, .main-section, .synthese-section { padding: 4rem 6vw; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">FF.</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html" data-page="index">Accueil</a></li>
+    <li><a href="apropos.html" data-page="apropos">À propos</a></li>
+    <li><a href="projets.html" data-page="projets">Projets</a></li>
+    <li><a href="stages.html" data-page="stages">Stages</a></li>
+    <li><a href="veille.html" data-page="veille">Veille</a></li>
+    <li><a href="competences.html" data-page="competences">Compétences</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="page-content">
+
+  <!-- INTRO + TABLEAU BLOC 1 -->
+  <section class="main-section">
+    <h2 class="section-title" data-num="05.">Tableau des Compétences E4</h2>
+    <p class="section-sub">Couverture des compétences du Bloc 1 — BTS SIO Option SLAM</p>
+
+    <p style="color:var(--text-muted); margin-bottom:2rem; font-size:0.95rem;">
+      <strong style="color:var(--white)">3 projets concrets</strong> (SicilyLines Laravel, SicilyLines WinForms, Modern Data Stack),
+      <strong style="color:var(--white)">2 stages en entreprise</strong> (URSSAF, Alturing) et une
+      <strong style="color:var(--white)">veille technologique hebdomadaire</strong> sur le Zero Trust et la cybersécurité avancée.
+      Chaque compétence est détaillée avec les situations professionnelles qui ont permis de l'acquérir.
+    </p>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>Compétence</th>
+            <th>Situations professionnelles</th>
+            <th>Comment acquise</th>
+            <th>Contexte</th>
+            <th>Niveau</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Développer des applications <span class="tag">B1.1</span></td>
+            <td>SicilyLines Laravel — SicilyLines WindowsForms</td>
+            <td>Conception et développement de site/applications complètes, architecture MVC, connexion base de données</td>
+            <td>AP / Cours</td>
+            <td><span class="badge badge-ok">✔ Acquis</span></td>
+          </tr>
+          <tr>
+            <td>Gérer les données <span class="tag">B1.2</span></td>
+            <td>SicilyLines Laravel — WindowsForms (MySQL) — Alturing (PostgreSQL)</td>
+            <td>Modélisation UML, requêtes SQL, pipelines de données avec Kestra</td>
+            <td>AP / Stage</td>
+            <td><span class="badge badge-ok">✔ Acquis</span></td>
+          </tr>
+          <tr>
+            <td>Répondre aux incidents <span class="tag">B1.3</span></td>
+            <td>Stage URSSAF</td>
+            <td>Traitement de tickets via GLPI, support N1/N2, gestion des comptes Active Directory, déploiement de postes</td>
+            <td>Stage</td>
+            <td><span class="badge badge-ok">✔ Acquis</span></td>
+          </tr>
+          <tr>
+            <td>Travailler en mode projet <span class="tag">B1.4</span></td>
+            <td>Tous projets (Git) — Alturing (Agile Scrum)</td>
+            <td>Versioning Git sur tous les projets, rédaction de documentation technique (AP), méthode Agile Scrum et daily stand-ups chez Alturing</td>
+            <td>AP / Stage</td>
+            <td><span class="badge badge-ok">✔ Acquis</span></td>
+          </tr>
+          <tr>
+            <td>Mettre en place des composants de sécurité <span class="tag">B1.5</span></td>
+            <td>Laravel Breeze — URSSAF (AD) — Veille Zero Trust</td>
+            <td>Authentification sécurisée via Laravel Breeze, gestion des rôles et droits d'accès, administration Active Directory</td>
+            <td>AP / Stage</td>
+            <td><span class="badge badge-ok">✔ Acquis</span></td>
+          </tr>
+          <tr>
+            <td>Organiser son développement professionnel <span class="tag">B1.6</span></td>
+            <td>Veille Zero Trust — Portfolio E4 — 2 stages</td>
+            <td>Veille hebdomadaire avec Google Alertes et Feedly, construction du portfolio E4, deux expériences en entreprise dans des contextes différents</td>
+            <td>Continu / Stage</td>
+            <td><span class="badge badge-ok">✔ Acquis</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== TABLEAU DE SYNTHESE E5 ===== -->
+  <section class="synthese-section">
+    <h2 class="section-title" data-num="06.">Tableau de Synthèse E5</h2>
+    <p class="section-sub">Réalisations professionnelles — BTS SIO SLAM — Session 2026 — FALL El Hadji Falilou</p>
+
+    <div class="synthese-wrap reveal">
+      <table class="synthese-table">
+        <thead>
+          <tr>
+            <th colspan="8">BTS SERVICES INFORMATIQUES AUX ORGANISATIONS — Tableau de synthèse des réalisations professionnelles — SESSION 2026</th>
+          </tr>
+          <tr>
+            <th rowspan="2" style="text-align:left; min-width:260px;">Réalisations professionnelles</th>
+            <th rowspan="2" style="min-width:110px;">Période</th>
+            <th>Gérer le patrimoine informatique</th>
+            <th>Répondre aux incidents</th>
+            <th>Développer la présence en ligne</th>
+            <th>Travailler en mode projet</th>
+            <th>Mettre à disposition un service</th>
+            <th>Organiser son dév. professionnel</th>
+          </tr>
+          <tr>
+            <th style="font-size:0.65rem; font-weight:400; color:var(--text-muted);">Recenser, exploiter référentiels, habilitations, continuité, sauvegardes</th>
+            <th style="font-size:0.65rem; font-weight:400; color:var(--text-muted);">Collecter, suivre, orienter demandes réseau, système, applicatifs</th>
+            <th style="font-size:0.65rem; font-weight:400; color:var(--text-muted);">Valoriser image, référencer services, faire évoluer le site Web</th>
+            <th style="font-size:0.65rem; font-weight:400; color:var(--text-muted);">Analyser objectifs, planifier, évaluer indicateurs de suivi</th>
+            <th style="font-size:0.65rem; font-weight:400; color:var(--text-muted);">Tests intégration, déploiement, accompagnement utilisateurs</th>
+            <th style="font-size:0.65rem; font-weight:400; color:var(--text-muted);">Environnement apprentissage, veille, identité pro, projet professionnel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- FORMATION -->
+          <tr class="section-row"><td colspan="8">📚 Réalisations en cours de formation</td></tr>
+          <tr>
+            <td>Sicily Lines — Gestion des ferry (PHP Laravel)</td>
+            <td class="period-cell">15/12/2025 au 15/01/2026</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Sicily Lines — Gestion des liaisons (C# Windows Form)</td>
+            <td class="period-cell">18/11/2025 au 13/12/2025</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Création d'un Portfolio</td>
+            <td class="period-cell">01/09/2025 au 14/03/2026</td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Projet Bonbon (PHP)</td>
+            <td class="period-cell">1ère année</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Projet Biblio (SQL)</td>
+            <td class="period-cell">1ère année</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Installation et configuration d'un environnement de développement local (Laragon)</td>
+            <td class="period-cell">1ère année</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+
+          <!-- STAGE 1ERE ANNEE -->
+          <tr class="section-row"><td colspan="8">🏢 Réalisations en milieu professionnel — 1ère année (URSSAF Montreuil)</td></tr>
+          <tr>
+            <td>Support utilisateur N1/N2 via GLPI</td>
+            <td class="period-cell">19/05 au 27/06/2025</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Administration des comptes via l'Active Directory</td>
+            <td class="period-cell">19/05 au 27/06/2025</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Déploiement de postes de travail</td>
+            <td class="period-cell">19/05 au 27/06/2025</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Inventaire et suivi du parc informatique via GLPI</td>
+            <td class="period-cell">19/05 au 27/06/2025</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Assistance utilisateurs à distance</td>
+            <td class="period-cell">19/05 au 27/06/2025</td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+
+          <!-- STAGE 2EME ANNEE -->
+          <tr class="section-row"><td colspan="8">🚀 Réalisations en milieu professionnel — 2ème année (Alturing)</td></tr>
+          <tr>
+            <td>Suivi de projet via GitLab (Agile Scrum)</td>
+            <td class="period-cell">12/01 au 20/02/2026</td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Étude, documentation et mise en place technique</td>
+            <td class="period-cell">12/01 au 20/02/2026</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Création des flux d'extraction automatisés Kestra</td>
+            <td class="period-cell">12/01 au 20/02/2026</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Modélisation des tables PostgreSQL (Bronze/Silver/Gold)</td>
+            <td class="period-cell">12/01 au 20/02/2026</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Création des tableaux de bord Metabase</td>
+            <td class="period-cell">12/01 au 20/02/2026</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+          <tr>
+            <td>Analyse et exploitation de l'API Centreon</td>
+            <td class="period-cell">12/01 au 20/02/2026</td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+            <td class="check-cell"></td>
+            <td class="check-cell"><span class="check-icon">✔</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- DETAIL PAR COMPETENCE -->
+  <section class="main-section" style="padding-top:0;">
+    <h2 class="section-title" data-num="07.">Détail par Compétence</h2>
+    <p class="section-sub">Cliquez sur une compétence pour voir comment elle a été acquise.</p>
+
+    <div class="accordion">
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div>
+            <div class="accordion-title">Développer des applications</div>
+            <div class="accordion-sub">B1.1 — Conception, développement et maintenance d'applications</div>
+          </div>
+          <span class="accordion-icon">+</span>
+        </div>
+        <div class="accordion-body">
+          <p>Cette compétence est celle que j'ai le plus exercée au cours de ma formation. Elle recouvre la capacité à <strong>concevoir, développer et maintenir</strong> des applications adaptées à différents besoins. J'ai pu la mettre en pratique sur <strong>deux projets majeurs</strong> (SicilyLines Laravel et WinForms).</p>
+          <p style="margin-top:0.8rem;"><em>Laravel</em> — Ce projet m'a permis d'apprendre à structurer une application selon l'architecture <strong>MVC</strong>, à créer des routes, contrôleurs et vues, à implémenter un <strong>CRUD complet</strong> sur les ferrys et leurs équipements avec une relation en base de données, et aussi à générer des brochures PDF. L'authentification a été intégrée via <em>Laravel Breeze</em>.</p>
+          <p style="margin-top:0.8rem;"><em>C# Windows Forms</em> — Permettant de gérer les liaisons maritimes entre ports siciliens. Ce projet m'a appris à structurer le code en couches, à concevoir des formulaires de saisie et à connecter l'application à une <strong>base de données MySQL</strong>.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div>
+            <div class="accordion-title">Gérer les données</div>
+            <div class="accordion-sub">B1.2 — Conception, exploitation et administration des données</div>
+          </div>
+          <span class="accordion-icon">+</span>
+        </div>
+        <div class="accordion-body">
+          <p>La gestion des données est une compétence que j'ai développée sur <strong>trois projets différents</strong> : MySQL avec Laravel et le projet C#, et PostgreSQL lors de mon stage chez Alturing.</p>
+          <p style="margin-top:0.8rem;">Pour Laravel, j'ai modélisé en <em>UML</em> puis implémenté les tables, les relations et utilisé les <strong>migrations</strong> pour gérer les relations entre ferrys et équipements.</p>
+          <p style="margin-top:0.8rem;">Chez Alturing, j'ai participé à la construction d'une <strong>Modern Data Stack</strong> complète. J'ai configuré des pipelines d'orchestration avec <em>Kestra</em>, stocké et structuré les données dans <em>PostgreSQL</em>, et créé des tableaux de bord de visualisation avec <em>Metabase</em>.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div>
+            <div class="accordion-title">Répondre aux incidents</div>
+            <div class="accordion-sub">B1.3 — Gestion et résolution d'incidents informatiques</div>
+          </div>
+          <span class="accordion-icon">+</span>
+        </div>
+        <div class="accordion-body">
+          <p>Cette compétence a été acquise exclusivement en contexte professionnel, lors de mon premier stage à l'<strong>URSSAF</strong>. Elle m'a permis de découvrir le fonctionnement réel du support informatique en entreprise et de prendre en charge des incidents concrets d'utilisateurs.</p>
+          <p style="margin-top:0.8rem;">J'ai travaillé quotidiennement via <em>GLPI</em> en assurant un <strong>support N1 et N2</strong> : résolution de problèmes matériels et logiciels, configuration de postes de travail, gestion et création de <strong>comptes Active Directory</strong>, déploiement de nouveaux postes et maintenance du parc informatique.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div>
+            <div class="accordion-title">Travailler en mode projet</div>
+            <div class="accordion-sub">B1.4 — Organisation, collaboration et gestion de projet</div>
+          </div>
+          <span class="accordion-icon">+</span>
+        </div>
+        <div class="accordion-body">
+          <p>Le travail en mode projet a été présent tout au long de ma formation, aussi bien dans les ateliers de professionnalisation qu'en stage. J'ai progressivement maîtrisé les outils et méthodes qui structurent le développement logiciel en équipe.</p>
+          <p style="margin-top:0.8rem;">Sur les projets AP, j'ai utilisé <em>Git</em> avec mon camarade Zakaria pour le versioning du code et rédigé de la <strong>documentation technique</strong>.</p>
+          <p style="margin-top:0.8rem;">Chez Alturing, j'ai appliqué la méthode <em>Agile Scrum</em> : participation aux réunions quotidiennes, gestion des tâches et suivi d'avancement via des tickets <em>GitLab</em> (Issues) et organisation du travail en sprints de 2 semaines.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div>
+            <div class="accordion-title">Mettre en place des composants de sécurité</div>
+            <div class="accordion-sub">B1.5 — Sécurisation des applications et des accès</div>
+          </div>
+          <span class="accordion-icon">+</span>
+        </div>
+        <div class="accordion-body">
+          <p>La sécurité est une dimension que j'ai intégrée à la fois dans mes développements applicatifs et dans ma pratique professionnelle en stage. Ma veille sur le <strong>Zero Trust</strong> m'a également permis de comprendre les enjeux de sécurité à l'échelle de l'entreprise.</p>
+          <p style="margin-top:0.8rem;">Sur SicilyLines, j'ai mis en place une <strong>authentification sécurisée</strong> via <em>Laravel Breeze</em> (hachage des mots de passe, protection CSRF, sessions sécurisées) ainsi qu'un <strong>système de rôles</strong> pour différencier les accès.</p>
+          <p style="margin-top:0.8rem;">À l'URSSAF, j'ai administré les <strong>comptes et droits d'accès</strong> via <em>Active Directory</em>, ce qui m'a montré l'importance du <strong>principe du moindre privilège</strong>, pilier fondamental du modèle Zero Trust.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <div>
+            <div class="accordion-title">Organiser son développement professionnel</div>
+            <div class="accordion-sub">B1.6 — Veille, auto-formation et progression continue</div>
+          </div>
+          <span class="accordion-icon">+</span>
+        </div>
+        <div class="accordion-body">
+          <p>Cette compétence traduit ma capacité à m'informer, à me former de façon autonome et à construire mon parcours professionnel de manière réfléchie sur toute la durée de ma formation.</p>
+          <p style="margin-top:0.8rem;">J'ai mené une <strong>veille technologique hebdomadaire</strong> de <em>septembre 2025 à février 2026</em> sur le thème <em>Zero Trust et cybersécurité avancée</em>, en utilisant Google Alertes, Feedly et les publications officielles de l'ANSSI et de la CNIL.</p>
+          <p style="margin-top:0.8rem;">J'ai également construit mon <strong>portfolio en HTML/CSS/JavaScript</strong> de A à Z, et réalisé deux stages dans des contextes très différents : <strong>support IT en grande organisation</strong> (URSSAF) et <strong>startups tech / data engineering</strong> (Alturing), ce qui m'a aidé à définir mon projet professionnel : poursuivre en <em>Licence Pro Data ou Cybersécurité</em> en alternance.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>Conçu &amp; développé par <span>Falilou Fall</span> — BTS SIO Option SLAM — <span id="year"></span></p>
+</footer>
+
+<button id="back-to-top" title="Retour en haut">↑</button>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  document.querySelectorAll('.nav-links a').forEach(l => l.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  const progressBar = document.getElementById('progress-bar');
+  const backToTop = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop;
+    const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    progressBar.style.width = (s / h * 100) + '%';
+    s > 400 ? backToTop.classList.add('visible') : backToTop.classList.remove('visible');
+  });
+  backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 }).observe(el);
+  });
+
+  // Active nav
+  const currentFile = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if (a.getAttribute('href') === currentFile) a.classList.add('active');
+  });
+
+  // Accordion
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const item = header.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+</script>
+
+</body>
+</html>

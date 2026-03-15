@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>À propos — Portfolio Falilou Fall</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #0a192f;
+      --accent: #64ffda;
+      --accent2: #0d6efd;
+      --light-bg: #112240;
+      --card-bg: #172a45;
+      --text: #ccd6f6;
+      --text-muted: #8892b0;
+      --white: #e6f1ff;
+      --radius: 10px;
+      --transition: all 0.3s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--primary);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: var(--accent); text-decoration: none; transition: var(--transition); }
+    a:hover { color: var(--white); }
+
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 9999; transition: width 0.1s linear;
+    }
+
+    nav {
+      position: fixed; top: 3px; left: 0; right: 0;
+      background: rgba(10, 25, 47, 0.97);
+      backdrop-filter: blur(10px);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 2.5rem;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(100,255,218,0.1);
+    }
+    .nav-logo { font-size: 1.4rem; font-weight: 700; color: var(--accent); letter-spacing: 2px; }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted); font-size: 0.85rem;
+      letter-spacing: 1px; text-transform: uppercase;
+      position: relative; padding-bottom: 4px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: var(--accent);
+      transition: var(--transition);
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { display: block; width: 25px; height: 2px; background: var(--accent); transition: var(--transition); }
+
+    .page-content { padding-top: 80px; min-height: 100vh; }
+    section, .main-section { padding: 5rem 10vw; }
+    .section-title {
+      font-size: 1.8rem; font-weight: 700; color: var(--white);
+      margin-bottom: 0.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-title::before { content: attr(data-num); color: var(--accent); font-size: 1.1rem; font-family: monospace; }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--light-bg); max-width: 300px; }
+    .section-sub { color: var(--text-muted); margin-bottom: 3rem; font-size: 0.95rem; }
+
+    .card {
+      background: var(--card-bg); border-radius: var(--radius);
+      padding: 1.5rem; border: 1px solid rgba(100,255,218,0.08);
+      transition: var(--transition);
+    }
+    .card:hover { transform: translateY(-5px); border-color: rgba(100,255,218,0.25); }
+
+    .btn {
+      display: inline-block; padding: 0.75rem 1.8rem;
+      border-radius: var(--radius); font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: var(--transition); letter-spacing: 1px;
+    }
+    .btn-outline {
+      background: transparent; border: 2px solid var(--accent); color: var(--accent);
+    }
+    .btn-outline:hover { background: rgba(100,255,218,0.1); transform: translateY(-2px); color: var(--accent); }
+    .btn-solid {
+      background: var(--accent2); border: 2px solid var(--accent2); color: var(--white);
+    }
+    .btn-solid:hover { filter: brightness(1.2); transform: translateY(-2px); color: var(--white); }
+
+    .badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.75rem; }
+    .badge-ok { background: rgba(100,255,218,0.15); color: var(--accent); }
+
+    .tag {
+      display: inline-block;
+      background: rgba(100,255,218,0.08); color: var(--accent);
+      padding: 0.25rem 0.6rem; border-radius: 20px;
+      font-size: 0.78rem; font-family: monospace;
+    }
+
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    #back-to-top {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--accent); color: var(--primary);
+      border: none; border-radius: 50%;
+      width: 44px; height: 44px; font-size: 1.2rem;
+      cursor: pointer; display: none; align-items: center;
+      justify-content: center; transition: var(--transition);
+      z-index: 999; box-shadow: 0 4px 15px rgba(100,255,218,0.3);
+    }
+    #back-to-top:hover { transform: translateY(-3px); }
+    #back-to-top.visible { display: flex; }
+
+    footer {
+      text-align: center; padding: 2rem;
+      color: var(--text-muted); font-size: 0.82rem;
+      border-top: 1px solid var(--light-bg);
+    }
+    footer span { color: var(--accent); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(10,25,47,0.98); padding: 1rem 2rem; gap: 1.2rem; border-top: 1px solid var(--light-bg); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      section, .main-section { padding: 4rem 6vw; }
+      .about-duo-grid { grid-template-columns: 1fr !important; }
+      .about-grid { grid-template-columns: 1fr !important; }
+    }
+
+    .about-text { color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.8; }
+    .about-text strong { color: var(--white); }
+
+    .about-duo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      align-items: stretch;
+    }
+
+    .formation-block {
+      background: var(--card-bg); border-radius: var(--radius);
+      padding: 2rem; border: 1px solid rgba(100,255,218,0.08);
+    }
+    .formation-block h3 { color: var(--white); margin-bottom: 1rem; font-size: 1.1rem; }
+    .formation-block p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1rem; }
+    .formation-block p:last-child { margin-bottom: 0; }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; margin-top: 3rem; }
+    .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; margin-top: 1rem; }
+    .skill-item {
+      background: var(--card-bg); padding: 0.75rem 1rem; border-radius: var(--radius);
+      display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;
+      color: var(--text); border-left: 3px solid var(--accent); transition: var(--transition);
+    }
+    .skill-item:hover { transform: translateX(5px); color: var(--white); }
+
+    .cv-section { text-align: center; }
+    .cv-preview {
+      max-width: 750px; margin: 0 auto;
+      border: 2px solid rgba(100,255,218,0.15);
+      border-radius: var(--radius); overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      transition: var(--transition);
+    }
+    .cv-preview:hover {
+      border-color: rgba(100,255,218,0.4);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+      transform: translateY(-4px);
+    }
+    .cv-preview img { width: 100%; display: block; }
+  </style>
+</head>
+<body>
+<div id="progress-bar"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">FF.</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="apropos.html">À propos</a></li>
+    <li><a href="projets.html">Projets</a></li>
+    <li><a href="stages.html">Stages</a></li>
+    <li><a href="veille.html">Veille</a></li>
+    <li><a href="competences.html">Compétences</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="page-content">
+
+  <!-- SECTION 01 — À PROPOS -->
+  <section class="main-section" style="padding-top:2rem;">
+    <h2 class="section-title" data-num="01.">À propos de moi</h2>
+    <p class="section-sub">Mon parcours, mes compétences et mes objectifs professionnels</p>
+
+    <!-- GRILLE COTE A COTE -->
+    <div class="about-duo-grid reveal">
+
+      <!-- BLOC GAUCHE — Présentation -->
+      <div class="formation-block">
+        <p class="about-text">
+          Je m'appelle <strong>Falilou FALL</strong>, étudiant en 2ème année de BTS SIO option SLAM
+          au lycée Polyvalent de Cachan. Au fil de ma formation, je me suis spécialisé dans le
+          <strong>développement d'applications logicielles et web</strong>, avec un intérêt particulier
+          pour la <strong>cybersécurité</strong>.
+        </p>
+        <p class="about-text">
+          Au cours de ma formation, j'ai eu l'opportunité de développer des projets concrets : une
+          application web de gestion sous <strong>Laravel</strong> et une application en
+          <strong>C# WindowsForms</strong>. Ces projets m'ont permis de maîtriser des technologies modernes
+          et de comprendre les enjeux réels du développement logiciel en entreprise.
+        </p>
+        <p class="about-text">
+          J'ai également effectué deux stages professionnels : un premier à l'<strong>URSSAF</strong>
+          où j'ai travaillé dans le service du support informatique et l'administration Active Directory, et un second chez
+          <strong>Alturing</strong> où j'ai mis en place une Modern Data Stack grace au logiciel d'orchestration de données
+          <strong>Kestra</strong>, une base de données <strong>PostgreSQL</strong> et <strong>Metabase</strong> pour la visualisation, le tout en utilisant la méthode
+          Agile Scrum.
+        </p>
+        <p class="about-text" style="margin-bottom:0;">
+          J'ai aussi réalisée une veille technologique régulière sur les thématiques du
+          <strong>Zero Trust et de la cybersécurité avancée</strong>, afin de rester informé des
+          évolutions du secteur.
+        </p>
+      </div>
+
+      <!-- BLOC DROIT — Ma formation -->
+      <div class="formation-block">
+        <h3>📘 Le BTS SIO — Services Informatiques aux Organisations</h3>
+        <p>
+          Le <strong>BTS SIO (Services Informatiques aux Organisations)</strong> est un diplôme de niveau Bac+2 qui forme des
+          techniciens supérieurs capables de répondre aux besoins informatiques des entreprises. Il se décline en deux options :
+          <strong>SISR</strong> (infrastructures et réseaux) et <strong>SLAM</strong> (solutions logicielles et applications métier).
+        </p>
+        <p>
+          L'option <strong>SLAM — Solutions Logicielles et Applications Métier</strong> forme des développeurs capables de concevoir,
+          développer et maintenir des applications informatiques adaptées aux besoins des organisations. Les étudiants y acquièrent
+          des compétences en développement web (PHP, HTML/CSS), en développement d'applications desktop et mobiles (C#, .NET),
+          en gestion de bases de données relationnelles (SQL, MySQL), ainsi qu'en cybersécurité applicative.
+        </p>
+        <p>
+          La formation alterne entre enseignements théoriques, ateliers de professionnalisation (AP) et périodes de stage en entreprise,
+          permettant aux étudiants d'acquérir une expérience professionnelle concrète dès le début de leur parcours. À l'issue du BTS SIO
+          SLAM, les diplômés peuvent intégrer directement le marché du travail en tant que développeurs, ou poursuivre leurs études en
+          Licence Professionnelle, Bachelor ou 3e année de BUT informatique.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- COMPÉTENCES -->
+    <div class="about-grid reveal">
+      <div>
+        <h3 style="color:var(--white);margin-bottom:1rem;font-size:1.1rem;">🛠️ Compétences techniques</h3>
+        <div class="skills-grid">
+          <div class="skill-item">🌐 HTML / CSS</div>
+          <div class="skill-item">🐘 PHP / Laravel</div>
+          <div class="skill-item">⚙️ C# (.NET)</div>
+          <div class="skill-item">🗃️ SQL / MySQL</div>
+          <div class="skill-item">🔷 C# WinForms</div>
+          <div class="skill-item">📱 .NET MAUI</div>
+          <div class="skill-item">🐙 Git / GitHub</div>
+          <div class="skill-item">🔒 Cybersécurité</div>
+          <div class="skill-item">📊 UML / WinDesign</div>
+          <div class="skill-item">🖥️ Active Directory</div>
+          <div class="skill-item">🏗️ Architecture MVC</div>
+        </div>
+      </div>
+      <div>
+        <h3 style="color:var(--white);margin-bottom:1rem;font-size:1.1rem;">🎯 Compétences transversales</h3>
+        <div class="skills-grid">
+          <div class="skill-item">💡 Résolution de problèmes</div>
+          <div class="skill-item">📚 Apprentissage autonome</div>
+          <div class="skill-item">🤝 Travail en équipe</div>
+          <div class="skill-item">📝 Documentation technique</div>
+          <div class="skill-item">🔍 Veille technologique</div>
+          <div class="skill-item">⏱️ Gestion de projet</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION CV -->
+  <section class="main-section" style="padding-top:2rem;">
+    <h2 class="section-title" data-num="02.">Mon CV</h2>
+    <p class="section-sub">Curriculum Vitae</p>
+    <div class="cv-section reveal">
+      <div class="cv-preview">
+        <img src="cv.png" alt="CV Falilou Fall" />
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>Développé par <span>Falilou Fall</span> — BTS SIO Option SLAM — <span id="year"></span></p>
+</footer>
+<button id="back-to-top" title="Retour en haut">↑</button>
+
+<script>
+  document.getElementById('year') && (document.getElementById('year').textContent = new Date().getFullYear());
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  document.querySelectorAll('.nav-links a').forEach(l => l.addEventListener('click', () => navLinks.classList.remove('open')));
+  const progressBar = document.getElementById('progress-bar');
+  const backToTop = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop;
+    const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    progressBar.style.width = (s / h * 100) + '%';
+    backToTop && (s > 400 ? backToTop.classList.add('visible') : backToTop.classList.remove('visible'));
+  });
+  backToTop && backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  document.querySelectorAll('.reveal').forEach(el => {
+    new IntersectionObserver((entries) => {
+      entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); } });
+    }, { threshold: 0.1 }).observe(el);
+  });
+  const currentFile = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if(a.getAttribute('href') === currentFile) a.classList.add('active');
+  });
+</script>
+</body>
+</html>
